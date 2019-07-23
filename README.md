@@ -25,7 +25,7 @@ npm start
 
 ### How to work it with your API:
 
-####Folder Structure: 
+#### Folder Structure: 
 ```
 .
 ├── components
