@@ -1,7 +1,7 @@
 # NextJS-JWT
 
-A JWT-Auth app created with [Next.js](https://nextjs.org/) and [Redux](https://redux.js.org/).
-This app works with a API created with Rails, but you can change it [here](#how-to-work-it-with-your-api) to works with your API.
+A JWT-Auth app created with [Next.js](https://nextjs.org/) and [Redux](https://redux.js.org/).<br>
+This app works with an API created with Rails, but you can change it [here](#how-to-work-it-with-your-api) to works with your API.
 
 ## Usage:
 
