@@ -36,7 +36,7 @@ class Signup extends Component {
             first_name: this.state.first_name,
             last_name: this.state.last_name,
             username: this.state.username,
-            gender: this.state.gender,
+            gender: parseInt(this.state.gender),
             email: this.state.email,
             password: this.state.password,
             password_confirmation: this.state.password_confirmation,
@@ -107,7 +107,6 @@ class Signup extends Component {
                             className="form-control"
                             type="date"
                             placeholder="Birth Date"
-                            required
                             name="birth_date"
                             value={this.state.birth_date}
                             onChange={this.handleChange}

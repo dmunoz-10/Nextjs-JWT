@@ -2,6 +2,7 @@ import Router from 'next/router';
 import { AUTHENTICATE, DEAUTHENTICATE } from '../types';
 import { API } from '../../config';
 import { setCookie, removeCookie } from '../../utils/cookie';
+import axios from 'axios';
 
 // Register a User
 const register = ({ first_name,
@@ -18,28 +19,40 @@ const register = ({ first_name,
     }
 
     return () => {
-        fetch(`${API}/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                first_name,
-                last_name,
-                username,
-                gender,
-                email,
-                password,
-                password_confirmation,
-                birth_date,
-                phone_number
-            })
+        axios.post(`${API}/users`, {
+            first_name,
+            last_name,
+            username,
+            gender,
+            email,
+            password,
+            password_confirmation,
+            birth_date,
+            phone_number
         })
         .then(() => {
             Router.push('/signin');
         })
-        .catch((err) => {
-            throw new Error(err);
+        .catch((error) => {
+            console.log(error.response);
+            switch (error.response.status) {
+                case 422:
+                    let message = '';
+                    for (const [key, value] of Object.entries(error.response.data)) {
+                        message += `${key.toUpperCase()}: ${value.join(', ')}\n`
+                    }
+                    alert(message);
+                    break;
+                case 401:
+                    alert(error.response.data);
+                    break;
+                case 500:
+                    alert('Interval server error! Reload the page and try again!');
+                    break;
+                default:
+                    alert(error.response.data);
+                    break;
+            }
         });
     };
 };
@@ -51,24 +64,34 @@ const authenticate = ({ email, password }, type) => {
     }
 
     return (dispatch) => {
-        fetch(`${API}/users/authenticate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
+        axios.post(`${API}/users/authenticate`, {
+            email,
+            password
         })
-        .then((response) => response.json()) 
-        .then ((data) => {
-            setCookie('token', data.auth_token);
-            Router.push('/');
-            dispatch({type: AUTHENTICATE, payload: data.auth_token});
+        .then ((response) => {
+            setCookie('token', response.data.auth_token);
+            Router.push('/me');
+            dispatch({type: AUTHENTICATE, payload: response.data.auth_token});
         })
-        .catch((err) => {
-            throw new Error(err);
+        .catch((error) => {
+            switch (error.response.status) {
+                case 422:
+                    let message = '';
+                    for (const [key, value] of Object.entries(error.response.data)) {
+                        message += `${key.toUpperCase()}: ${value.join(', ')}\n`
+                    }
+                    alert(message);
+                    break;
+                case 401:
+                    alert(error.response.data.error.user_authentication);
+                    break;
+                case 500:
+                    alert('Interval server error! Reload the page and try again!');
+                    break;
+                default:
+                    alert(error.response.data);
+                    break;
+            }
         });
     };
 };

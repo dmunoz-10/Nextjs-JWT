@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { API } from '../config';
 import initialize from '../utils/initialize';
 import Layout from '../components/Layout';
-import fetch from 'isomorphic-unfetch'
+import axios from 'axios'
 
 const Me = ({user}) => {
     const title = user ? user.username : 'Stranger'
@@ -16,9 +16,13 @@ const Me = ({user}) => {
                         <li>ID: {user.id}</li>
                         <li>First Name: {user.first_name}</li>
                         <li>Last Name: {user.last_name}</li>
-                        <li>Gender: {user.gender}</li>
+                        <li>Gender: {user.gender === 'rather_not_to_say' ? <span className="badge badge-secondary">
+                            rather not to say
+                        </span> : user.gender}</li>
                         <li>Email: {user.email}</li>
-                        <li>Birth Date: {user.birth_date}</li>
+                        <li>Birth Date: {user.birth_date || <span className="badge badge-secondary">
+                            Empty
+                        </span>}</li>
                         <li>Phone Number: {user.phone_number}</li>
                     </ul>
                 </div>
@@ -36,12 +40,12 @@ Me.getInitialProps = async (ctx) => {
     initialize(ctx);
     const token = ctx.store.getState().authentication.token;
     if (token) {
-        const response = await fetch(`${API}/user/me`, {
+        const response = await axios.get(`${API}/user/me`, {
             headers: {
                 Authorization: token
             }
         });
-        const user = await response.json();
+        const user = await response.data.user;
         return { user };
     }
 };

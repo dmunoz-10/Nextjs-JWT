@@ -1,11 +1,13 @@
 # NextJS-JWT
 
 A JWT-Auth app created with [Next.js](https://nextjs.org/) and [Redux](https://redux.js.org/).
+This app works with a API created with Rails, but you can change it [here](#how-to-work-it-with-your-api) to works with your API.
 
 ## Usage:
 
 ### Instalation:
 Make sure you have Node and NPM installed.
+Also that you have the [API](https://github.com/dmunoz-10/Rails-JWT)
 
 ```bash
 git clone https://github.com/dmunoz-10/Nextjs-JWT.git
@@ -25,7 +27,8 @@ npm start
 
 ### How to work it with your API:
 
-#### Folder Structure: 
+#### Folder Structure:
+
 ```
 .
 ├── components
@@ -58,6 +61,7 @@ npm start
 ├── README.md
 └── server.js
 ```
+
 - Change the API's URL:
     Go to `./config.js` and you can change it:
     ```
@@ -73,24 +77,43 @@ npm start
   - Sign up:
     
     ```
-    21    fetch(`${API}/users`, {
+    22    axios.post(`${API}/users`, {
     ```
   <br>
 
   - Sign in:
     
     ```
-    54    fetch(`${API}/users/authenticate`, {
+    67    axios.post(`${API}/users/authenticate`, {
     ```
+    <br>
+
+    **Note:** To change the way how you extract the token:
+
+    ```
+    72    setCookie('token', response.data.auth_token);
+    73    Router.push('/me');
+    74    dispatch({type: AUTHENTICATE, payload: response.data.auth_token});
+    ```
+  <br>
+
   Go to `./pages/me.js`
     <br>
 
     - Show the User's data:
         
         ```
-        39    const response = await fetch(`${API}/user/me`, {
+        43    const response = await axios.get(`${API}/user/me`, {
+        ```
+        <br>
+
+        **Note:** To change the way how you extract the data:
+
+        ```
+        48    const user = await response.data.user;
         ```
 
 ## TODO
 
-- [ ] Add the API that uses JWT for Authentication.
+- [x] Add the API that uses JWT for Authentication.
+- [x] Show the errors validations in the Sign up and Sign in pages
